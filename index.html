@@ -1,0 +1,367 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Kyr4vex - Scripter</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#040404;
+    --panel:#0d0d0d;
+    --panel-2:#141414;
+    --text:#f7f7f5;
+    --muted:#8f8f8f;
+    --line:rgba(255,255,255,0.09);
+    --orange:#ff6a1a;
+    --discord:#5865F2;
+    font-family:'Montserrat', sans-serif;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--bg);
+    color:var(--text);
+    overflow-x:hidden;
+    padding-top:env(safe-area-inset-top,0px);
+    padding-bottom:env(safe-area-inset-bottom,0px);
+    font-weight:700;
+  }
+  a{color:inherit; text-decoration:none;}
+  ::selection{ background:var(--orange); color:#050505; }
+  button{ font-family:inherit; border:none; background:none; color:inherit; cursor:pointer; }
+
+  
+  .nav{
+    position:fixed; top:0; left:0; right:0; z-index:50;
+    display:flex; justify-content:space-between; align-items:center;
+    padding: calc(24px + env(safe-area-inset-top,0px)) 40px 0;
+  }
+  .nav .mark{ font-size:15px; font-weight:900; letter-spacing:-0.02em; }
+  .discord-btn{
+    display:inline-flex; align-items:center; gap:9px;
+    padding:10px 18px 10px 14px;
+    background:var(--discord);
+    border-radius:999px;
+    font-size:13px; font-weight:800; letter-spacing:0.01em;
+    color:#fff;
+    transition: transform .2s ease, box-shadow .2s ease;
+  }
+  .discord-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 24px rgba(88,101,242,0.4); }
+  .discord-btn svg{ flex-shrink:0; }
+
+  
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding: 120px 40px 60px;
+    background:
+      linear-gradient(var(--bg) 55%, transparent),
+      repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 64px),
+      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 64px);
+    background-color:var(--bg);
+  }
+  .hero::after{
+    content:'';
+    position:absolute; inset:0;
+    background: radial-gradient(ellipse 70% 55% at 80% 8%, rgba(255,106,26,0.13), transparent 60%);
+    pointer-events:none;
+  }
+
+  .kicker{
+    position:relative; z-index:2;
+    font-size:13px; font-weight:800; letter-spacing:0.04em;
+    color:var(--orange);
+    margin-bottom:22px;
+  }
+
+  .headline{
+    position:relative; z-index:2;
+    font-size: clamp(2.8rem, 8.6vw, 7.2rem);
+    font-weight:900;
+    line-height:0.98;
+    letter-spacing:-0.03em;
+    max-width:1100px;
+  }
+
+  .subline{
+    position:relative; z-index:2;
+    margin-top:26px;
+    max-width:640px;
+    font-size: clamp(1rem, 1.6vw, 1.2rem);
+    font-weight:700;
+    color:var(--muted);
+  }
+
+  .hero-actions{
+    position:relative; z-index:2;
+    display:flex; align-items:center; gap:28px;
+    margin-top:48px;
+    flex-wrap:wrap;
+  }
+
+  .contact-btn{
+    display:inline-flex; align-items:center; gap:10px;
+    padding:18px 38px;
+    background:var(--orange);
+    color:#050505;
+    border-radius:2px;
+    font-size:14px; font-weight:900; letter-spacing:0.01em;
+    transition: transform .2s ease;
+  }
+  .contact-btn:hover{ transform:translateY(-3px); }
+
+  .scroll-hint{
+    font-size:12px; font-weight:800; color:var(--muted);
+    display:flex; align-items:center; gap:10px;
+  }
+  .scroll-hint .dot{
+    width:7px; height:7px; border-radius:50%;
+    background:var(--orange);
+    animation: pulse 1.6s ease-in-out infinite;
+  }
+  @keyframes pulse{
+    0%,100%{ opacity:1; transform:scale(1); }
+    50%{ opacity:0.35; transform:scale(0.7); }
+  }
+
+  
+  .work{
+    padding: 90px 40px 120px;
+    border-top:1px solid var(--line);
+  }
+  .work-head{
+    display:flex; justify-content:space-between; align-items:flex-end;
+    margin-bottom:44px;
+    gap:20px; flex-wrap:wrap;
+  }
+  .work-title{
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+    font-weight:900; letter-spacing:-0.02em;
+  }
+  .work-count{
+    font-size:13px; font-weight:800; color:var(--muted);
+  }
+
+  .work-media{
+    display:grid;
+    grid-template-columns:repeat(3,minmax(0,1fr));
+    gap:28px;
+  }
+  .work-item{
+    background:#000;
+    border:1px solid var(--line);
+    border-radius:6px;
+    overflow:hidden;
+  }
+  .work-item img, .work-item video{
+    width:100%;
+    aspect-ratio:4/3;
+    object-fit:contain;
+    background:#000;
+    display:block;
+  }
+  .work-item video{
+    pointer-events:none;
+  }
+  .work-caption{
+    padding:16px 18px 18px;
+    font-size:clamp(1.05rem,2vw,1.3rem);
+    font-weight:900;
+    letter-spacing:-0.01em;
+  }
+
+  .about{
+    padding: 0 40px 140px;
+  }
+  .about-grid{
+    display:grid;
+    grid-template-columns: 1.1fr 0.9fr;
+    gap:64px;
+  }
+  .about-title{
+    font-size: clamp(1.8rem, 3.6vw, 2.6rem);
+    font-weight:900; letter-spacing:-0.02em;
+    margin-bottom:28px;
+  }
+  .about-text p{
+    font-size:15px; font-weight:700; color:var(--text);
+    line-height:1.8;
+  }
+
+  .stack-block{ margin-bottom:34px; }
+  .stack-label{
+    font-size:12px; font-weight:800; letter-spacing:0.04em;
+    color:var(--muted);
+    margin-bottom:14px;
+  }
+  .stack-pills{ display:flex; flex-wrap:wrap; gap:10px; }
+  .pill{
+    display:inline-flex; align-items:center; gap:8px;
+    padding:9px 16px;
+    border:1px solid var(--line);
+    border-radius:999px;
+    font-size:13px; font-weight:800;
+    background:var(--panel);
+  }
+  .pill img{ width:16px; height:16px; display:block; }
+
+  .payment-note{
+    margin-top:6px;
+    font-size:14px; font-weight:700; color:var(--muted);
+  }
+  .payment-note strong{ color:var(--text); }
+
+  
+  .footer{
+    padding: 44px 40px calc(44px + env(safe-area-inset-bottom,0px));
+    border-top:1px solid var(--line);
+    display:flex; justify-content:space-between; align-items:center;
+    flex-wrap:wrap; gap:16px;
+  }
+  .footer .small{ font-size:12px; font-weight:800; color:var(--muted); }
+  .footer a:hover{ color:var(--orange); }
+
+  
+  @media (max-width:1100px){
+    .work-media{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  }
+
+  @media (max-width:900px){
+    .about-grid{ grid-template-columns:1fr; gap:44px; }
+  }
+  @media (max-width:720px){
+    .work-media{ grid-template-columns:1fr; gap:22px; }
+    .nav{ padding: calc(18px + env(safe-area-inset-top,0px)) 22px 0; }
+    .hero{ padding:110px 22px 50px; }
+    .hero-actions{ gap:20px; }
+    .work{ padding:70px 22px 90px; }
+    .about{ padding:0 22px 100px; }
+    .footer{ padding:36px 22px calc(36px + env(safe-area-inset-bottom,0px)); }
+  }
+
+  @media (prefers-reduced-motion: reduce){
+    .scroll-hint .dot{ animation:none; }
+    html{ scroll-behavior:auto; }
+  }
+</style>
+</head>
+<body>
+
+  <nav class="nav">
+    <span class="mark">KYR4VEX</span>
+    <a class="discord-btn" href="https://discord.com/users/1519438448174436415" target="_blank" rel="noopener">
+      <svg width="16" height="16" viewBox="0 0 127.14 96.36" fill="#fff"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
+      Discord
+    </a>
+  </nav>
+
+  <section class="hero">
+    <span class="kicker">SCRIPTER - LUA / LUAU</span>
+    <h1 class="headline">Kyr4vex.</h1>
+    <p class="subline">Self-taught scripter, 2-3 years building systems and tools in Luau.</p>
+    <div class="hero-actions">
+      <a class="contact-btn" href="https://discord.com/users/1519438448174436415" target="_blank" rel="noopener">Contact me</a>
+      <span class="scroll-hint"><span class="dot"></span>Scroll to see the work</span>
+    </div>
+  </section>
+
+  <section class="work" id="work">
+    <div class="work-head">
+      <span class="work-title">Selected work</span>
+      <span class="work-count" id="work-count"></span>
+    </div>
+
+    <div class="work-media" id="work-media"></div>
+  </section>
+
+  <section class="about" id="about">
+    <div class="about-grid">
+      <div>
+        <h2 class="about-title">About</h2>
+        <div class="about-text">
+          <p>I really enjoy C++ and Lua/Luau<br>
+          I'm also learning cryptography<br>
+          My dream is working in a big team and getting paid<br>
+          🛠︎ 2-3 Years Luau Exp. / Self-Taught 🛠︎</p>
+        </div>
+
+        <div class="payment-note" style="margin-top:28px;">
+          <strong>Payment:</strong> Robux or crypto only.
+        </div>
+        <div class="stack-pills" style="margin-top:12px;">
+          <span class="pill"><img src="https://cryptologos.cc/logos/toncoin-ton-logo.png" alt=""> Toncoin</span>
+          <span class="pill"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt=""> Ethereum</span>
+          <span class="pill"><img src="https://cryptologos.cc/logos/litecoin-ltc-logo.png" alt=""> Litecoin</span>
+          <span class="pill"><img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt=""> USDC</span>
+        </div>
+      </div>
+
+      <div>
+        <div class="stack-block">
+          <div class="stack-label">LANGUAGES</div>
+          <div class="stack-pills">
+            <span class="pill"><img src="https://skillicons.dev/icons?i=lua" alt=""> Luau</span>
+            <span class="pill"><img src="https://skillicons.dev/icons?i=lua" alt=""> Lua</span>
+            <span class="pill"><img src="https://skillicons.dev/icons?i=cpp" alt=""> C++</span>
+            <span class="pill"><img src="https://skillicons.dev/icons?i=python" alt=""> Python</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="footer">
+    <span class="small">&copy; <span id="year"></span> Kyr4vex</span>
+    <a class="small" href="https://discord.com/users/1519438448174436415" target="_blank" rel="noopener">DISCORD -&gt;</a>
+  </footer>
+
+<script>
+const PROJECTS = {
+  "https://raw.githubusercontent.com/Kyr4vex/predictive-bullet-path/main/assets/showcase.gif": "Predictive bullet path",
+  "https://raw.githubusercontent.com/Kyr4vex/roblox-ball-movement/main/assets/showcase.gif": "Ball movement system",
+  "assets/movement.mp4": "CS2-like movements with counterstrafes and surfs"
+};
+
+const entries = Object.entries(PROJECTS);
+const media = document.getElementById('work-media');
+document.getElementById('work-count').textContent = entries.length.toString().padStart(2, '0') + ' PROJECTS';
+
+entries.forEach(([src, label], i) => {
+  const item = document.createElement('article');
+  item.className = 'work-item';
+
+  let element;
+  if (/\.(mp4|webm|ogg|mov)(?:$|\?)/i.test(src)) {
+    element = document.createElement('video');
+    element.src = src;
+    element.autoplay = true;
+    element.loop = true;
+    element.muted = true;
+    element.playsInline = true;
+    element.preload = 'auto';
+  } else {
+    element = document.createElement('img');
+    element.src = src;
+    element.alt = label;
+    element.loading = i === 0 ? 'eager' : 'lazy';
+    element.decoding = 'async';
+  }
+
+  const caption = document.createElement('div');
+  caption.className = 'work-caption';
+  caption.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(entries.length).padStart(2, '0') + '  ' + label;
+
+  item.appendChild(element);
+  item.appendChild(caption);
+  media.appendChild(item);
+});
+
+document.getElementById('year').textContent = new Date().getFullYear();
+</script>
+
+</body>
+</html>

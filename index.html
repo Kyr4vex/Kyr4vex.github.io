@@ -3,361 +3,444 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0c0c0c">
+<meta name="color-scheme" content="dark">
 <title>Kyr4vex - Scripter</title>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@700;800;900&display=swap" rel="stylesheet">
+<link rel="preconnect" href="https://unpkg.com" crossorigin>
+<link rel="preconnect" href="https://raw.githubusercontent.com">
+<link rel="preconnect" href="https://skillicons.dev">
+<link rel="preconnect" href="https://cryptologos.cc">
+<link rel="preload" href="assets/fonts/bricolage-grotesque.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets/fonts/figtree.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
 <style>
+  @font-face{ font-family:'Bricolage Grotesque'; src:url('assets/fonts/bricolage-grotesque.woff2') format('woff2'); font-weight:200 800; font-display:swap; }
+  @font-face{ font-family:'Figtree'; src:url('assets/fonts/figtree.woff2') format('woff2'); font-weight:300 900; font-display:swap; }
   :root{
-    --bg:#040404;
-    --panel:#0d0d0d;
-    --panel-2:#141414;
-    --text:#f7f7f5;
-    --muted:#8f8f8f;
-    --line:rgba(255,255,255,0.09);
-    --orange:#ff6a1a;
-    --discord:#5865F2;
-    font-family:'Montserrat', sans-serif;
+    color-scheme:dark;
+    --paper:rgb(12,12,12);
+    --card:rgb(25,25,25);
+    --ink:#ececec;
+    --soft:#9a9a9a;
+    --rule:rgb(40,40,40);
+    --cobalt:#7a89ff;
+    --on_ink:rgb(12,12,12);
+    --tag_bg:rgb(25,25,25);
+    --tag_ink:#ececec;
+    --r:10px;
+    --display:'Bricolage Grotesque', 'Segoe UI', sans-serif;
+    --body:'Figtree', 'Segoe UI', sans-serif;
   }
-  *{box-sizing:border-box; margin:0; padding:0;}
-  html{scroll-behavior:smooth;}
+  *{ box-sizing:border-box; margin:0; padding:0; }
+  html{ scroll-behavior:smooth; height:100%; color-scheme:dark; -webkit-tap-highlight-color:transparent; }
+  a, button{ touch-action:manipulation; }
+  h1, h2{ text-wrap:balance; }
+  section[id]{ scroll-margin-top:72px; }
+  .skip_link{ position:absolute; left:16px; top:-80px; z-index:100; padding:10px 16px; background:var(--ink); color:#fff; border-radius:var(--r); font-weight:700; }
+  .skip_link:focus-visible{ top:calc(12px + env(safe-area-inset-top,0px)); }
   body{
-    background:var(--bg);
-    color:var(--text);
+    background:var(--paper);
+    color:var(--ink);
+    font-family:var(--body);
+    font-weight:500;
+    line-height:1.6;
     overflow-x:hidden;
     padding-top:env(safe-area-inset-top,0px);
     padding-bottom:env(safe-area-inset-bottom,0px);
-    font-weight:700;
   }
-  a{color:inherit; text-decoration:none;}
-  ::selection{ background:var(--orange); color:#050505; }
-  button{ font-family:inherit; border:none; background:none; color:inherit; cursor:pointer; }
+  a{ color:inherit; text-decoration:none; }
+  ::selection{ background:var(--cobalt); color:#fff; }
+  a:focus-visible, button:focus-visible{ outline:3px solid var(--cobalt); outline-offset:3px; }
 
-  
-  .nav{
-    position:fixed; top:0; left:0; right:0; z-index:50;
-    display:flex; justify-content:space-between; align-items:center;
-    padding: calc(24px + env(safe-area-inset-top,0px)) 40px 0;
-  }
-  .nav .mark{ font-size:15px; font-weight:900; letter-spacing:-0.02em; }
-  .discord-btn{
-    display:inline-flex; align-items:center; gap:9px;
-    padding:10px 18px 10px 14px;
-    background:var(--discord);
-    border-radius:999px;
-    font-size:13px; font-weight:800; letter-spacing:0.01em;
-    color:#fff;
-    transition: transform .2s ease, box-shadow .2s ease;
-  }
-  .discord-btn:hover{ transform:translateY(-2px); box-shadow:0 8px 24px rgba(88,101,242,0.4); }
-  .discord-btn svg{ flex-shrink:0; }
-
-  
-  .hero{
-    position:relative;
+  .shell{
+    display:grid;
+    grid-template-columns:260px minmax(0,1fr);
     min-height:100vh;
-    display:flex; flex-direction:column; justify-content:center;
-    padding: 120px 40px 60px;
-    background:
-      linear-gradient(var(--bg) 55%, transparent),
-      repeating-linear-gradient(0deg, var(--line) 0 1px, transparent 1px 64px),
-      repeating-linear-gradient(90deg, var(--line) 0 1px, transparent 1px 64px);
-    background-color:var(--bg);
-  }
-  .hero::after{
-    content:'';
-    position:absolute; inset:0;
-    background: radial-gradient(ellipse 70% 55% at 80% 8%, rgba(255,106,26,0.13), transparent 60%);
-    pointer-events:none;
   }
 
-  .kicker{
-    position:relative; z-index:2;
-    font-size:13px; font-weight:800; letter-spacing:0.04em;
-    color:var(--orange);
-    margin-bottom:22px;
+  .rail{
+    position:sticky; top:0;
+    align-self:start;
+    height:100vh;
+    padding:36px 28px;
+    border-right:1px solid var(--rule);
+    display:flex; flex-direction:column; justify-content:space-between;
   }
-
-  .headline{
-    position:relative; z-index:2;
-    font-size: clamp(2.8rem, 8.6vw, 7.2rem);
-    font-weight:900;
-    line-height:0.98;
-    letter-spacing:-0.03em;
-    max-width:1100px;
+  .rail_name{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:22px;
+    letter-spacing:-0.02em;
   }
-
-  .subline{
-    position:relative; z-index:2;
-    margin-top:26px;
-    max-width:640px;
-    font-size: clamp(1rem, 1.6vw, 1.2rem);
+  .rail_nav{ display:flex; flex-direction:column; gap:4px; margin-top:44px; }
+  .rail_nav a{
+    padding:8px 0;
+    font-size:15px;
     font-weight:700;
-    color:var(--muted);
+    color:var(--soft);
+    border-bottom:1px solid transparent;
+    width:max-content;
   }
+  .rail_nav a:hover{ color:var(--ink); border-bottom-color:var(--cobalt); }
 
-  .hero-actions{
-    position:relative; z-index:2;
-    display:flex; align-items:center; gap:28px;
-    margin-top:48px;
-    flex-wrap:wrap;
-  }
-
-  .contact-btn{
+  .discord_btn{
     display:inline-flex; align-items:center; gap:10px;
-    padding:18px 38px;
-    background:var(--orange);
-    color:#050505;
-    border-radius:2px;
-    font-size:14px; font-weight:900; letter-spacing:0.01em;
-    transition: transform .2s ease;
+    padding:12px 20px 12px 16px;
+    background:var(--ink);
+    color:var(--on_ink);
+    border-radius:var(--r);
+    font-size:14px;
+    font-weight:700;
+    transition:background .2s ease, transform .1s ease;
   }
-  .contact-btn:hover{ transform:translateY(-3px); }
+  .discord_btn:hover{ background:var(--cobalt); }
+  .discord_btn:active, .contact_btn:active{ transform:scale(0.98); }
+  .discord_btn i{ font-size:18px; }
 
-  .scroll-hint{
-    font-size:12px; font-weight:800; color:var(--muted);
-    display:flex; align-items:center; gap:10px;
-  }
-  .scroll-hint .dot{
-    width:7px; height:7px; border-radius:50%;
-    background:var(--orange);
-    animation: pulse 1.6s ease-in-out infinite;
-  }
-  @keyframes pulse{
-    0%,100%{ opacity:1; transform:scale(1); }
-    50%{ opacity:0.35; transform:scale(0.7); }
-  }
+  .main{ min-width:0; }
 
-  
+  .hero{
+    min-height:100vh;
+    padding:96px 64px 72px;
+    display:flex; flex-direction:column; justify-content:center;
+    position:relative;
+  }
+  .hero_tag{
+    font-size:14px;
+    font-weight:700;
+    background:var(--tag_bg);
+    color:var(--tag_ink);
+    padding:6px 14px;
+    border-radius:var(--r);
+    width:max-content;
+    margin-bottom:28px;
+  }
+  .hero_title{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:clamp(3.5rem, 11vw, 9rem);
+    line-height:0.86;
+    letter-spacing:-0.05em;
+    margin-left:-0.04em;
+    animation:rise .9s cubic-bezier(.2,.8,.2,1) both;
+  }
+  .hero_title span{ color:var(--cobalt); }
+  @keyframes rise{
+    from{ opacity:0; transform:translateY(28px); }
+    to{ opacity:1; transform:none; }
+  }
+  .hero_sub{
+    margin-top:36px;
+    max-width:30ch;
+    font-family:var(--display);
+    font-weight:600;
+    font-size:clamp(1.3rem, 2.4vw, 1.9rem);
+    line-height:1.25;
+    letter-spacing:-0.01em;
+  }
+  .hero_actions{
+    margin-top:44px;
+    display:flex; align-items:center; gap:28px; flex-wrap:wrap;
+  }
+  .contact_btn{
+    display:inline-block;
+    padding:16px 30px;
+    background:var(--ink);
+    color:var(--on_ink);
+    border-radius:var(--r);
+    font-weight:700;
+    font-size:15px;
+    transition:background .2s ease, transform .1s ease;
+  }
+  .contact_btn:hover{ background:var(--cobalt); }
+  .scroll_hint{
+    font-size:15px;
+    font-weight:700;
+    color:var(--ink);
+    border-bottom:2px solid var(--cobalt);
+    padding-bottom:2px;
+  }
+  .scroll_hint:hover{ color:var(--cobalt); }
+
   .work{
-    padding: 90px 40px 120px;
-    border-top:1px solid var(--line);
+    padding:96px 64px 40px;
+    border-top:1px solid var(--rule);
   }
-  .work-head{
-    display:flex; justify-content:space-between; align-items:flex-end;
-    margin-bottom:44px;
+  .work_head{
+    display:flex; justify-content:space-between; align-items:baseline;
     gap:20px; flex-wrap:wrap;
+    margin-bottom:48px;
   }
-  .work-title{
-    font-size: clamp(1.8rem, 3.6vw, 2.6rem);
-    font-weight:900; letter-spacing:-0.02em;
+  .work_title{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:clamp(2.2rem, 4.6vw, 3.6rem);
+    letter-spacing:-0.04em;
+    line-height:1;
   }
-  .work-count{
-    font-size:13px; font-weight:800; color:var(--muted);
-  }
+  .work_count{ font-size:14px; font-weight:700; color:var(--soft); font-variant-numeric:tabular-nums; }
 
-  .work-media{
+  .work_media{
     display:grid;
     grid-template-columns:repeat(3,minmax(0,1fr));
-    gap:28px;
+    gap:32px 24px;
+    align-items:start;
   }
-  .work-item{
-    background:#000;
-    border:1px solid var(--line);
-    border-radius:6px;
+  .work_frame{
+    background:var(--card);
+    border-radius:var(--r);
     overflow:hidden;
+    box-shadow:0 0 0 1px var(--rule);
+    line-height:0;
   }
-  .work-item img, .work-item video{
-    width:100%;
-    aspect-ratio:4/3;
-    object-fit:contain;
-    background:#000;
+  .work_frame img, .work_frame video{
     display:block;
+    width:100%;
+    height:auto;
   }
-  .work-item video{
-    pointer-events:none;
-  }
-  .work-caption{
-    padding:16px 18px 18px;
-    font-size:clamp(1.05rem,2vw,1.3rem);
-    font-weight:900;
-    letter-spacing:-0.01em;
+  .work_frame video{ pointer-events:none; }
+  .work_caption{
+    margin-top:16px;
+    font-family:var(--display);
+    font-weight:600;
+    font-size:clamp(1.1rem, 1.8vw, 1.4rem);
+    letter-spacing:-0.015em;
+    line-height:1.25;
   }
 
   .about{
-    padding: 0 40px 140px;
+    padding:120px 64px 120px;
   }
-  .about-grid{
+  .about_grid{
     display:grid;
-    grid-template-columns: 1.1fr 0.9fr;
-    gap:64px;
+    grid-template-columns:minmax(0,1.2fr) minmax(0,0.8fr);
+    gap:72px;
   }
-  .about-title{
-    font-size: clamp(1.8rem, 3.6vw, 2.6rem);
-    font-weight:900; letter-spacing:-0.02em;
-    margin-bottom:28px;
+  .about_title{
+    font-family:var(--display);
+    font-weight:800;
+    font-size:clamp(2.2rem, 4.6vw, 3.6rem);
+    letter-spacing:-0.04em;
+    line-height:1;
+    margin-bottom:36px;
   }
-  .about-text p{
-    font-size:15px; font-weight:700; color:var(--text);
-    line-height:1.8;
+  .about_lines{ list-style:none; }
+  .about_lines li{
+    padding:18px 0;
+    border-top:1px solid var(--rule);
+    font-family:var(--display);
+    font-weight:600;
+    font-size:clamp(1.15rem, 2vw, 1.55rem);
+    line-height:1.3;
+    letter-spacing:-0.015em;
   }
+  .about_lines li i{ color:var(--cobalt); vertical-align:-0.1em; }
+  .about_lines li:last-child{ border-bottom:1px solid var(--rule); }
 
-  .stack-block{ margin-bottom:34px; }
-  .stack-label{
-    font-size:12px; font-weight:800; letter-spacing:0.04em;
-    color:var(--muted);
-    margin-bottom:14px;
+  .side_block{ margin-bottom:48px; }
+  .side_label{
+    font-size:15px;
+    font-weight:700;
+    color:var(--soft);
+    margin-bottom:16px;
   }
-  .stack-pills{ display:flex; flex-wrap:wrap; gap:10px; }
+  .payment_note{ font-size:17px; font-weight:500; margin-bottom:16px; }
+  .payment_note strong{ font-weight:700; }
+  .pills{ display:flex; flex-wrap:wrap; gap:10px; }
   .pill{
-    display:inline-flex; align-items:center; gap:8px;
-    padding:9px 16px;
-    border:1px solid var(--line);
-    border-radius:999px;
-    font-size:13px; font-weight:800;
-    background:var(--panel);
+    display:inline-flex; align-items:center; gap:9px;
+    padding:9px 16px 9px 12px;
+    background:var(--card);
+    border-radius:var(--r);
+    box-shadow:0 0 0 1px var(--rule);
+    font-size:14px;
+    font-weight:700;
   }
-  .pill img{ width:16px; height:16px; display:block; }
+  .pill img{ width:18px; height:18px; display:block; }
 
-  .payment-note{
-    margin-top:6px;
-    font-size:14px; font-weight:700; color:var(--muted);
-  }
-  .payment-note strong{ color:var(--text); }
-
-  
   .footer{
-    padding: 44px 40px calc(44px + env(safe-area-inset-bottom,0px));
-    border-top:1px solid var(--line);
+    padding:32px 64px calc(32px + env(safe-area-inset-bottom,0px));
+    border-top:1px solid var(--rule);
     display:flex; justify-content:space-between; align-items:center;
     flex-wrap:wrap; gap:16px;
+    font-size:14px;
+    font-weight:700;
+    color:var(--soft);
   }
-  .footer .small{ font-size:12px; font-weight:800; color:var(--muted); }
-  .footer a:hover{ color:var(--orange); }
+  .footer a:hover{ color:var(--cobalt); }
 
-  
-  @media (max-width:1100px){
-    .work-media{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+  .top_bar{ display:none; }
+
+  @media (max-width:1000px){
+    .work_media{ grid-template-columns:repeat(2,minmax(0,1fr)); }
+    .about_grid{ grid-template-columns:1fr; gap:56px; }
   }
 
-  @media (max-width:900px){
-    .about-grid{ grid-template-columns:1fr; gap:44px; }
-  }
-  @media (max-width:720px){
-    .work-media{ grid-template-columns:1fr; gap:22px; }
-    .nav{ padding: calc(18px + env(safe-area-inset-top,0px)) 22px 0; }
-    .hero{ padding:110px 22px 50px; }
-    .hero-actions{ gap:20px; }
-    .work{ padding:70px 22px 90px; }
-    .about{ padding:0 22px 100px; }
-    .footer{ padding:36px 22px calc(36px + env(safe-area-inset-bottom,0px)); }
+  @media (max-width:820px){
+    .work_media{ grid-template-columns:1fr; }
+    .shell{ grid-template-columns:1fr; }
+    .rail{ display:none; }
+    .top_bar{
+      display:flex; justify-content:space-between; align-items:center;
+      padding:18px 22px;
+      border-bottom:1px solid var(--rule);
+      position:sticky; top:env(safe-area-inset-top,0px);
+      background:var(--paper);
+      z-index:10;
+    }
+    .top_bar .rail_name{ font-size:18px; }
+    .top_bar .discord_btn{ padding:9px 16px 9px 12px; font-size:13px; }
+    .hero{ padding:56px 22px 56px; min-height:auto; }
+    .work{ padding:64px 22px 24px; }
+    .about{ padding:80px 22px 80px; }
+    .footer{ padding:28px 22px calc(28px + env(safe-area-inset-bottom,0px)); }
   }
 
   @media (prefers-reduced-motion: reduce){
-    .scroll-hint .dot{ animation:none; }
+    .hero_title{ animation:none; }
+    .work_frame video{ pointer-events:auto; }
     html{ scroll-behavior:auto; }
   }
 </style>
 </head>
 <body>
 
-  <nav class="nav">
-    <span class="mark">KYR4VEX</span>
-    <a class="discord-btn" href="https://discord.com/users/1519438448174436415" target="_blank" rel="noopener">
-      <svg width="16" height="16" viewBox="0 0 127.14 96.36" fill="#fff"><path d="M107.7,8.07A105.15,105.15,0,0,0,81.47,0a72.06,72.06,0,0,0-3.36,6.83A97.68,97.68,0,0,0,49,6.83,72.37,72.37,0,0,0,45.64,0,105.89,105.89,0,0,0,19.39,8.09C2.79,32.65-1.71,56.6.54,80.21h0A105.73,105.73,0,0,0,32.71,96.36,77.7,77.7,0,0,0,39.6,85.25a68.42,68.42,0,0,1-10.85-5.18c.91-.66,1.8-1.34,2.66-2a75.57,75.57,0,0,0,64.32,0c.87.71,1.76,1.39,2.66,2a68.68,68.68,0,0,1-10.87,5.19,77,77,0,0,0,6.89,11.1A105.25,105.25,0,0,0,126.6,80.22h0C129.24,52.84,122.09,29.11,107.7,8.07ZM42.45,65.69C36.18,65.69,31,60,31,53s5-12.74,11.43-12.74S54,46,53.89,53,48.84,65.69,42.45,65.69Zm42.24,0C78.41,65.69,73.25,60,73.25,53s5-12.74,11.44-12.74S96.23,46,96.12,53,91.08,65.69,84.69,65.69Z"/></svg>
-      Discord
+  <a class="skip_link" href="#work">Skip to content</a>
+
+  <header class="top_bar">
+    <span class="rail_name" translate="no">KYR4VEX</span>
+    <a class="discord_btn" href="https://discord.com/users/1519438448174436415" target="_blank" rel="noopener">
+      <i class="ph-fill ph-discord-logo" aria-hidden="true"></i>
+      Contact me
     </a>
-  </nav>
+  </header>
 
-  <section class="hero">
-    <span class="kicker">SCRIPTER - LUA / LUAU</span>
-    <h1 class="headline">Kyr4vex.</h1>
-    <p class="subline">Self-taught scripter, 2-3 years building systems and tools in Luau.</p>
-    <div class="hero-actions">
-      <a class="contact-btn" href="https://discord.com/users/1519438448174436415" target="_blank" rel="noopener">Contact me</a>
-      <span class="scroll-hint"><span class="dot"></span>Scroll to see the work</span>
-    </div>
-  </section>
-
-  <section class="work" id="work">
-    <div class="work-head">
-      <span class="work-title">Selected work</span>
-      <span class="work-count" id="work-count"></span>
-    </div>
-
-    <div class="work-media" id="work-media"></div>
-  </section>
-
-  <section class="about" id="about">
-    <div class="about-grid">
+  <div class="shell">
+    <aside class="rail">
       <div>
-        <h2 class="about-title">About</h2>
-        <div class="about-text">
-          <p>I really enjoy C++ and Lua/Luau<br>
-          I'm also learning cryptography<br>
-          My dream is working in a big team and getting paid<br>
-          🛠︎ 2-3 Years Luau Exp. / Self-Taught 🛠︎</p>
-        </div>
-
-        <div class="payment-note" style="margin-top:28px;">
-          <strong>Payment:</strong> Robux or crypto only.
-        </div>
-        <div class="stack-pills" style="margin-top:12px;">
-          <span class="pill"><img src="https://cryptologos.cc/logos/toncoin-ton-logo.png" alt=""> Toncoin</span>
-          <span class="pill"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt=""> Ethereum</span>
-          <span class="pill"><img src="https://cryptologos.cc/logos/litecoin-ltc-logo.png" alt=""> Litecoin</span>
-          <span class="pill"><img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt=""> USDC</span>
-        </div>
+        <div class="rail_name" translate="no">KYR4VEX</div>
+                <nav class="rail_nav" aria-label="Sections">
+          <a href="#work">Selected work</a>
+          <a href="#about">About</a>
+        </nav>
       </div>
+      <a class="discord_btn" href="https://discord.com/users/1519438448174436415" target="_blank" rel="noopener">
+        <i class="ph-fill ph-discord-logo" aria-hidden="true"></i>
+      Contact me
+      </a>
+    </aside>
 
-      <div>
-        <div class="stack-block">
-          <div class="stack-label">LANGUAGES</div>
-          <div class="stack-pills">
-            <span class="pill"><img src="https://skillicons.dev/icons?i=lua" alt=""> Luau</span>
-            <span class="pill"><img src="https://skillicons.dev/icons?i=lua" alt=""> Lua</span>
-            <span class="pill"><img src="https://skillicons.dev/icons?i=cpp" alt=""> C++</span>
-            <span class="pill"><img src="https://skillicons.dev/icons?i=python" alt=""> Python</span>
+    <main class="main">
+      <section class="hero">
+        <span class="hero_tag">SCRIPTER - LUA / LUAU</span>
+        <h1 class="hero_title" translate="no">Kyr4vex<span>.</span></h1>
+        <p class="hero_sub">Self-taught scripter, 2-3&nbsp;years building systems and tools in Luau.</p>
+        <div class="hero_actions">
+          <a class="contact_btn" href="https://discord.com/users/1519438448174436415" target="_blank" rel="noopener">Contact me</a>
+          <a class="scroll_hint" href="#work">Scroll to see the work</a>
+        </div>
+      </section>
+
+      <section class="work" id="work">
+        <div class="work_head">
+          <h2 class="work_title">Selected work</h2>
+          <span class="work_count" id="work_count"></span>
+        </div>
+        <div class="work_media" id="work_media"></div>
+      </section>
+
+      <section class="about" id="about">
+        <div class="about_grid">
+          <div>
+            <h2 class="about_title">About</h2>
+            <ul class="about_lines">
+              <li>I really enjoy <span translate="no">C++ and Lua/Luau</span></li>
+              <li>I’m also learning cryptography</li>
+              <li>My dream is working in a big team and getting paid</li>
+              <li><i class="ph ph-wrench" aria-hidden="true"></i> 2-3&nbsp;Years Luau&nbsp;Exp. / Self-Taught <i class="ph ph-wrench" aria-hidden="true"></i></li>
+            </ul>
+          </div>
+
+          <div>
+            <div class="side_block">
+              <div class="side_label">LANGUAGES</div>
+              <div class="pills">
+                <span class="pill"><img src="https://skillicons.dev/icons?i=lua" alt="" width="18" height="18" translate="no"> Luau</span>
+                <span class="pill"><img src="https://skillicons.dev/icons?i=lua" alt="" width="18" height="18" translate="no"> Lua</span>
+                <span class="pill"><img src="https://skillicons.dev/icons?i=cpp" alt="" width="18" height="18" translate="no"> C++</span>
+                <span class="pill"><img src="https://skillicons.dev/icons?i=python" alt="" width="18" height="18" translate="no"> Python</span>
+              </div>
+            </div>
+
+            <div class="side_block">
+              <p class="payment_note"><strong>Payment:</strong> Robux or crypto only.</p>
+              <div class="pills">
+                <span class="pill"><img src="https://cryptologos.cc/logos/toncoin-ton-logo.png" alt="" width="18" height="18" translate="no"> Toncoin</span>
+                <span class="pill"><img src="https://cryptologos.cc/logos/ethereum-eth-logo.png" alt="" width="18" height="18" translate="no"> Ethereum</span>
+                <span class="pill"><img src="https://cryptologos.cc/logos/litecoin-ltc-logo.png" alt="" width="18" height="18" translate="no"> Litecoin</span>
+                <span class="pill"><img src="https://cryptologos.cc/logos/usd-coin-usdc-logo.png" alt="" width="18" height="18" translate="no"> USDC</span>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
-    </div>
-  </section>
+      </section>
 
-  <footer class="footer">
-    <span class="small">&copy; <span id="year"></span> Kyr4vex</span>
-    <a class="small" href="https://discord.com/users/1519438448174436415" target="_blank" rel="noopener">DISCORD -&gt;</a>
-  </footer>
+      <footer class="footer">
+        <span>&copy;&nbsp;<span id="year"></span> <span translate="no">Kyr4vex</span></span>
+        <a href="https://discord.com/users/1519438448174436415" target="_blank" rel="noopener">DISCORD -&gt;</a>
+      </footer>
+    </main>
+  </div>
 
 <script>
-const PROJECTS = {
+const projects = {
   "https://raw.githubusercontent.com/Kyr4vex/predictive-bullet-path/main/assets/showcase.gif": "Predictive bullet path",
   "https://raw.githubusercontent.com/Kyr4vex/roblox-ball-movement/main/assets/showcase.gif": "Ball movement system",
   "assets/movement.mp4": "CS2-like movements with counterstrafes and surfs"
 };
 
-const entries = Object.entries(PROJECTS);
-const media = document.getElementById('work-media');
-document.getElementById('work-count').textContent = entries.length.toString().padStart(2, '0') + ' PROJECTS';
+const reduce_motion = window.matchMedia('(prefers-reduced-motion: reduce)');
+const entries = Object.entries(projects);
+const media_root = document.getElementById('work_media');
+document.getElementById('work_count').textContent = entries.length.toString().padStart(2, '0') + ' PROJECTS';
 
 entries.forEach(([src, label], i) => {
   const item = document.createElement('article');
-  item.className = 'work-item';
+  item.className = 'work_item';
+
+  const frame = document.createElement('div');
+  frame.className = 'work_frame';
 
   let element;
   if (/\.(mp4|webm|ogg|mov)(?:$|\?)/i.test(src)) {
     element = document.createElement('video');
     element.src = src;
-    element.autoplay = true;
+    element.autoplay = !reduce_motion.matches;
+    element.controls = reduce_motion.matches;
     element.loop = true;
     element.muted = true;
     element.playsInline = true;
     element.preload = 'auto';
+    element.setAttribute('aria-label', label);
+    element.setAttribute('tabindex', '-1');
   } else {
     element = document.createElement('img');
     element.src = src;
     element.alt = label;
+    if (i === 0) element.fetchPriority = 'high';
     element.loading = i === 0 ? 'eager' : 'lazy';
     element.decoding = 'async';
   }
 
   const caption = document.createElement('div');
-  caption.className = 'work-caption';
-  caption.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(entries.length).padStart(2, '0') + '  ' + label;
+  caption.className = 'work_caption';
+  caption.textContent = label;
 
-  item.appendChild(element);
+  frame.appendChild(element);
+  item.appendChild(frame);
   item.appendChild(caption);
-  media.appendChild(item);
+  media_root.appendChild(item);
 });
 
 document.getElementById('year').textContent = new Date().getFullYear();
